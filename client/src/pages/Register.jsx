@@ -7,15 +7,40 @@ export default function Register() {
     username: "",
     password: "",
   });
+  console.log(inputs);
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+  };
 
   return (
     <div className={"auth"}>
       <h1>Register</h1>
-      <form className={"register"}>
-        <input type="text" placeholder="Full name" value />
-        <input type="text" placeholder="email" />
-        <input type="text" placeholder="Username" />
-        <input type="password" placeholder="Password" />
+      <form className={"register"} onSubmit={handleRegister}>
+        <input
+          type="text"
+          placeholder="Full name"
+          value={inputs.fullname}
+          onChange={(e) => setInputs({ ...inputs, fullname: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="email"
+          value={inputs.email}
+          onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Username"
+          value={inputs.username}
+          onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={inputs.password}
+          onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
+        />
         <button type="submit">Register</button>
       </form>
     </div>
