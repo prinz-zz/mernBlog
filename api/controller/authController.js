@@ -1,0 +1,10 @@
+
+
+const register = async (req, res) => {
+    res.status(200).json('Register')
+};
+
+
+export {
+    register,
+}

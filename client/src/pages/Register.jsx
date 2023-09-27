@@ -9,8 +9,13 @@ export default function Register() {
   });
   console.log(inputs);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    const res = await fetch("http://localhost:5050/api/register", {
+      method: "POST",
+      header: { "Content-type": "application/json" },
+      body: JSON.stringify(inputs),
+    });
   };
 
   return (
