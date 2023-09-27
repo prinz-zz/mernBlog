@@ -1,10 +1,33 @@
+import asyncHandler from 'express-async-handler'
+import User from '../models/User.js'
+import bcrypt from 'bcrypt'
 
+//register
+const register = asyncHandler( async (req, res) => {
+  const { fullname, email, username, password } = req.body;
 
-const register = async (req, res) => {
-    res.status(200).json('Register')
-};
+  //Fields empty
+  const isEmpty = Object.values(req.body).some((value) => value.length === '');
+    if(isEmpty){
+        res.status(400)
+        throw new Error('All fields are required')
+    }
 
+    //User exists
+    const userExists = await User.findOne({ email: email})
+    if(userExists){
+        res.status(400)
+        throw new Error('User already exists')
+    }
 
-export {
-    register,
-}
+    //password hash
+    const hashedPassword = await bcrypt.hash(password,10)//10 : salt rounds
+
+    const user = await User.create({
+        ...req.body,
+        password: hashedPassword
+    })
+
+});
+
+export { register };

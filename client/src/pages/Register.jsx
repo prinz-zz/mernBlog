@@ -7,7 +7,7 @@ export default function Register() {
     username: "",
     password: "",
   });
-  console.log(inputs);
+  //console.log(inputs);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -16,6 +16,8 @@ export default function Register() {
       header: { "Content-type": "application/json" },
       body: JSON.stringify(inputs),
     });
+    const data = await res.json();
+    console.log(data);
   };
 
   return (
@@ -29,7 +31,7 @@ export default function Register() {
           onChange={(e) => setInputs({ ...inputs, fullname: e.target.value })}
         />
         <input
-          type="text"
+          type="email"
           placeholder="email"
           value={inputs.email}
           onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
@@ -38,13 +40,13 @@ export default function Register() {
           type="text"
           placeholder="Username"
           value={inputs.username}
-          onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
+          onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
         />
         <input
           type="password"
           placeholder="Password"
           value={inputs.password}
-          onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
+          onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
         />
         <button type="submit">Register</button>
       </form>

@@ -82,7 +82,7 @@ div.post p.summary {
 
 form.login,
 form.register {
-  max-width: 400px;
+  width: 500px;
   margin: 0 auto;
 }
 input {
