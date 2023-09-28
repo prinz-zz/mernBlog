@@ -13,11 +13,20 @@ export default function Register() {
     e.preventDefault();
     const res = await fetch("http://localhost:5050/api/register", {
       method: "POST",
-      header: { "Content-type": "application/json" },
+      headers: { "Content-type": "application/json" },
       body: JSON.stringify(inputs),
     });
+
     const data = await res.json();
     console.log(data);
+
+    
+    if (res.status === 200) {
+      alert("Registration successfull");
+    } else {
+      alert("Registration failed");
+    }
+
   };
 
   return (

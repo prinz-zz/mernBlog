@@ -8,7 +8,7 @@ const register = asyncHandler(async (req, res) => {
   const { fullname, email, username, password } = req.body;
 
   //Fields empty
-  const isEmpty = Object.values(req.body).some((value) => value.length === "");
+  const isEmpty = Object.values(req.body).some((value) => value === "");
   if (isEmpty) {
     res.status(400);
     throw new Error("All fields are required");
@@ -30,6 +30,16 @@ const register = asyncHandler(async (req, res) => {
   });
 
   if (user) {
+    generateTokenAndSetCookie(user._id, res);
+    res.json({
+      id: user._id,
+      fullname: user.fullname,
+      username: user.username,
+      email: user.email,
+    });
+  } else {
+    return res.status(400).json({ error: "invalid user data" });
+    //throw new Error("invalid user data")
   }
 });
 
