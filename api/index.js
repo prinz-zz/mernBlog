@@ -8,9 +8,16 @@ import { dbConnection } from "./dbConnection/dbConnection.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
 
-//Middlewares
+
 const app = express();
-app.use(cors());
+
+
+app.use(cors({
+    origin : 'http://localhost:4000',
+    credentials: true, // <= Accept credentials (cookies) sent by the client
+  }));
+
+//Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

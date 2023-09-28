@@ -5,9 +5,22 @@ export default function Login() {
     username: "",
     password: "",
   });
+
   console.log(inputs);
-  const handleLogin = (e) => {
-    e,preventDefault()
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    const res = await fetch(`http://localhost:5050/api/login`, {
+      method: "POST",
+      credentials: 'include',
+      headers : {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(inputs),
+    })
+
+    const data = await res.json()
+    console.log(data);
 
   };
 
