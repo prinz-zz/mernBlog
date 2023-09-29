@@ -5,7 +5,6 @@ import { useLoginMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 
 export default function Login() {
-
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
@@ -15,29 +14,36 @@ export default function Login() {
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
 
-  const { user } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.auth);
 
-  useEffect(() =>{
-    if(user){
-      navigate('/')
+  useEffect(() => {
+    if (user) {
+      navigate("/");
     }
-  },[navigate, user]) 
-
-  
+  }, [navigate, user]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const res = await fetch(`http://localhost:5050/api/login`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(inputs),
-    });
 
-    const data = await res.json();
-    console.log(data);
+    try {
+      const res = await login({ inputs }).unwrap();
+      dispatch(setCredentials({ ...res }));
+      navigate("/");
+    } catch (err) {
+      console.log(err?.data?.message || err.error);
+    }
+
+    // const res = await fetch(`http://localhost:5050/api/login`, {
+    //   method: "POST",
+    //   credentials: "include",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(inputs),
+    // });
+
+    // const data = await res.json();
+    // console.log(data);
   };
 
   return (
