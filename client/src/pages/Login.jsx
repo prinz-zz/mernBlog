@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [inputs, setInputs] = useState({
@@ -6,22 +7,19 @@ export default function Login() {
     password: "",
   });
 
-  console.log(inputs);
-
   const handleLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const res = await fetch(`http://localhost:5050/api/login`, {
       method: "POST",
-      credentials: 'include',
-      headers : {
-        'Content-Type': 'application/json'
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(inputs),
-    })
+    });
 
-    const data = await res.json()
+    const data = await res.json();
     console.log(data);
-
   };
 
   return (
@@ -42,6 +40,10 @@ export default function Login() {
         />
         <button type="submit">Login</button>
       </form>
+      <p className="account">
+        New user?
+        <Link to="/register">Register</Link>
+      </p>
     </div>
   );
 }

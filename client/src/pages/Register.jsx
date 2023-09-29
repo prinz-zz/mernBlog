@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Register() {
   const [inputs, setInputs] = useState({
@@ -20,13 +21,11 @@ export default function Register() {
     const data = await res.json();
     console.log(data);
 
-    
     if (res.status === 200) {
       alert("Registration successfull");
     } else {
       alert("Registration failed");
     }
-
   };
 
   return (
@@ -59,6 +58,11 @@ export default function Register() {
         />
         <button type="submit">Register</button>
       </form>
+
+      <p className='account'>
+        Already have an account?
+        <Link to="/login">Login</Link>
+      </p>
     </div>
   );
 }

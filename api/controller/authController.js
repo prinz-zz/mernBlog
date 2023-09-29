@@ -5,7 +5,7 @@ import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js
 
 //register
 const register = asyncHandler(async (req, res) => {
-  const { fullname, email, username, password } = req.body;
+  const { name, email, username, password } = req.body;
 
   //Fields empty
   const isEmpty = Object.values(req.body).some((value) => value === "");
@@ -33,7 +33,7 @@ const register = asyncHandler(async (req, res) => {
     generateTokenAndSetCookie(user._id, res);
     res.json({
       id: user._id,
-      fullname: user.fullname,
+      name: user.name,
       username: user.username,
       email: user.email,
     });
@@ -66,7 +66,7 @@ const login = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     _id: user._id,
-    fullname: user.fullname,
+    name: user.name,
     username: user.username,
     email: user.email,
   });
