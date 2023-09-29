@@ -10,29 +10,29 @@ export default function Login() {
     password: "",
   });
 
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
 
   const { user } = useSelector((state) => state.auth);
+  console.log(user);
 
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [navigate, user]);
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await login({ inputs }).unwrap();
-      dispatch(setCredentials({ ...res }));
+      const res = await login({ username :inputs.username, password: inputs.password });
+      const data = await res.data
+      console.log(data);
+      dispatch(setCredentials({ ...res }));      
       navigate("/");
     } catch (err) {
-      console.log(err?.data?.message || err.error);
+      console.log(err);
     }
 
+    
+  
     // const res = await fetch(`http://localhost:5050/api/login`, {
     //   method: "POST",
     //   credentials: "include",
@@ -45,6 +45,12 @@ export default function Login() {
     // const data = await res.json();
     // console.log(data);
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [navigate, user]);
 
   return (
     <div className={"auth"}>

@@ -12,10 +12,12 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 
-app.use(cors({
-    origin : 'http://localhost:4000',
-    credentials: true, // <= Accept credentials (cookies) sent by the client
-  }));
+app.use(cors());
+
+// {
+//   origin : 'http://localhost:4000',
+//   credentials: true, // <= Accept credentials (cookies) sent by the client
+// }
 
 //Middlewares
 app.use(express.json());

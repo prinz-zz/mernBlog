@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 function App() {
   const { user } = useSelector((state) => state.auth);
 
-  console.log(user);
+  //console.log(user);
 
   return (
     <Routes>

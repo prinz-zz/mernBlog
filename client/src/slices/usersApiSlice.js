@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-const USERS_URL = "api/users";
+const USERS_URL = "/api/users";
 
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -12,5 +12,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     }),
   }),
 });
+
 
 export const { useLoginMutation } = usersApiSlice;

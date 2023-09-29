@@ -43,11 +43,15 @@ const register = asyncHandler(async (req, res) => {
   }
 });
 
+
+//LOGIN
+
 const login = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
 
   //isEmpty
   const isEmpty = Object.values(req.body).some((value) => value === "");
+  
   if (isEmpty) {
     res.status(400);
     throw new Error("All fields are required");
@@ -55,11 +59,10 @@ const login = asyncHandler(async (req, res) => {
 
   //Match username and password
   const user = await User.findOne({ username });
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.password);  
 
   if (!user || !isMatch) {
-    res.status(404);
-    throw new Error("Invalid username or password");
+    res.status(404).json("Invalid username or password");
   }
 
   generateTokenAndSetCookie(user._id, res);
