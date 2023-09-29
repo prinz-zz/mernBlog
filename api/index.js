@@ -27,7 +27,7 @@ app.use(morgan("common"));
 //DB connection
 dbConnection();
 
-app.use("/api", authRoutes);
+app.use("/api/users", authRoutes);
 
 //error handler
 app.use(errorHandler);

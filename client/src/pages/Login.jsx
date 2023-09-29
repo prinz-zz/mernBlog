@@ -1,11 +1,29 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useLoginMutation } from "../slices/usersApiSlice";
+import { setCredentials } from "../slices/authSlice";
 
 export default function Login() {
+
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
   });
+
+  const dispath = useDispatch();
+  const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
+
+  const { user } = useSelector((state) => state.auth)
+
+  useEffect(() =>{
+    if(user){
+      navigate('/')
+    }
+  },[navigate, user]) 
+
+  
 
   const handleLogin = async (e) => {
     e.preventDefault();
