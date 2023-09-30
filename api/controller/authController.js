@@ -38,41 +38,58 @@ const register = asyncHandler(async (req, res) => {
       email: user.email,
     });
   } else {
-    return res.status(400).json({ error: "invalid user data" });
-    //throw new Error("invalid user data")
+    return res.status(400);
+    throw new Error("invalid user data");
   }
 });
 
-
 //LOGIN
-
 const login = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
 
   //isEmpty
   const isEmpty = Object.values(req.body).some((value) => value === "");
-  
+
   if (isEmpty) {
     res.status(400);
     throw new Error("All fields are required");
   }
 
-  //Match username and password
+  //find User
   const user = await User.findOne({ username });
-  const isMatch = await bcrypt.compare(password, user.password);  
-
-  if (!user || !isMatch) {
-    res.status(404).json("Invalid username or password");
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+    return;
   }
 
-  generateTokenAndSetCookie(user._id, res);
+  //Match username and password
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!user || !isMatch) {
+    res.status(400);
+    throw new Error("Invalid username or password");
+  }
 
-  res.status(200).json({
-    _id: user._id,
-    name: user.name,
-    username: user.username,
-    email: user.email,
-  });
+  if (user) {
+    generateTokenAndSetCookie(user._id, res);
+    console.log(res);
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+    });
+  }
 });
 
-export { register, login };
+//LOGOUT
+const logoutUser = asyncHandler(async (req, res) => {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  res.status(200).json("Loggeddddddddddd out successfully");
+});
+
+export { register, login, logoutUser };

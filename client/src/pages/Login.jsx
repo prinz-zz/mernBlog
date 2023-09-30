@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [inputs, setInputs] = useState({
@@ -17,22 +18,22 @@ export default function Login() {
   const { user } = useSelector((state) => state.auth);
   console.log(user);
 
-
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await login({ username :inputs.username, password: inputs.password });
-      const data = await res.data
+      const res = await login({
+        username: inputs.username,
+        password: inputs.password,
+      },
+      ).unwrap();
+      const data = await res.data;
       console.log(data);
-      dispatch(setCredentials({ ...res }));      
+      dispatch(setCredentials({ ...res }));
       navigate("/");
     } catch (err) {
-      console.log(err);
+      toast.error(err?.data?.message || err);
     }
 
-    
-  
     // const res = await fetch(`http://localhost:5050/api/login`, {
     //   method: "POST",
     //   credentials: "include",
@@ -68,8 +69,13 @@ export default function Login() {
           value={inputs.password}
           onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
         />
-        <button type="submit">Login</button>
+        <button className="btn" type="submit">
+          Login
+        </button>
       </form>
+
+      {isLoading && <h2>Loading...</h2>}
+
       <p className="account">
         New user?
         <Link to="/register">Register</Link>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useRegisterMutation } from "../slices/usersApiSlice";
 
 export default function Register() {
   const [inputs, setInputs] = useState({
@@ -12,20 +13,24 @@ export default function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:5050/api/users/register", {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify(inputs),
-    });
 
-    const data = await res.json();
-    console.log(data);
+    try {
+    } catch (error) {}
 
-    if (res.status === 200) {
-      alert("Registration successfull");
-    } else {
-      alert("Registration failed");
-    }
+    // const res = await fetch("http://localhost:5050/api/users/register", {
+    //   method: "POST",
+    //   headers: { "Content-type": "application/json" },
+    //   body: JSON.stringify(inputs),
+    // });
+
+    // const data = await res.json();
+    // console.log(data);
+
+    // if (res.status === 200) {
+    //   alert("Registration successfull");
+    // } else {
+    //   alert("Registration failed");
+    // }
   };
 
   return (
@@ -56,10 +61,10 @@ export default function Register() {
           value={inputs.password}
           onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
         />
-        <button type="submit">Register</button>
+        <button className='btn' type="submit">Register</button>
       </form>
 
-      <p className='account'>
+      <p className="account">
         Already have an account?
         <Link to="/login">Login</Link>
       </p>
