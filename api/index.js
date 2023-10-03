@@ -5,6 +5,7 @@ import morgan from "morgan";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
 import { dbConnection } from "./dbConnection/dbConnection.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
@@ -41,6 +42,7 @@ dbConnection();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
 
 //error handler
 app.use(errorHandler);
