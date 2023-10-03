@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/User.js";
+import Post from "../models/Post.js";
 import bcrypt from "bcrypt";
 
 //GET PROFILE
@@ -50,15 +51,22 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
 ////////////////DELETE PROFILE////////////////
 
-const deleteUserProfile = asyncHandler((req, res) => {
+const deleteUserProfile = asyncHandler(async (req, res) => {
   if (req.body.userId === req.params.id) {
-   
+    
     try {
-      await User.findByIdAndDelete(req.params.id);
-      res.status(200).json('User has been deleted');
+      const user = await User.findById(req.params.id);
+      try {
+        await Post.deleteMany({author : user.author});
+        await User.findByIdAndDelete(req.params.id);
+        res.status(200).json('User has been deleted');
+      } catch (error) {
+        res.status(500).json(error);
+      }
     } catch (error) {
-      res.status(500).json(error);
+      res.status(404).json('User not found');
     }
+    
   } else {
     res.status(401);
     throw new Error("You can only delete your account");

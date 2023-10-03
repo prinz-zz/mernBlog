@@ -14,9 +14,9 @@ const postSchema = new mongoose.Schema(
     categories: Array,
     content: String,
     photo: String,
-    authour: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+    author: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "User" 
     },
   },
 
