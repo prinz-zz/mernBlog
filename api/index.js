@@ -4,6 +4,7 @@ dotenv.config();
 import morgan from "morgan";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import { dbConnection } from "./dbConnection/dbConnection.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
@@ -17,17 +18,29 @@ app.use(cookieParser());
 app.use(morgan("common"));
 app.use(cors());
 
+
 // app.use(
-//   cors({
-//     origin: "http://localhost:4000",
-//     credentials: true, // <= Accept credentials (cookies) sent by the client
-//   })
-// );
+//     cors({
+//       origin: "http://localhost:4000",
+//       credentials: true, // <= Accept credentials (cookies) sent by the client
+//     })
+//   );
+
+// app.use(function(req, res, next) {
+//     res.header('Access-Control-Allow-Credentials', true);
+//     res.header('Access-Control-Allow-Origin', req.headers.origin);
+//     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
+//     res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+//     next();
+//   });
+
+
 
 //DB connection
 dbConnection();
 
-app.use("/api/users", authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 //error handler
 app.use(errorHandler);

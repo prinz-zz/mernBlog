@@ -24,7 +24,7 @@ export default function Login() {
       const res = await login({
         username: inputs.username,
         password: inputs.password,
-      },
+      }
       ).unwrap();
       const data = await res.data;
       console.log(data);

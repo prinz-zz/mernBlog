@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import bcrypt from "bcrypt";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 
-//register
+////////////REGISTER/////////////////////////////////////////////
 const register = asyncHandler(async (req, res) => {
   const { name, email, username, password } = req.body;
 
@@ -31,19 +31,22 @@ const register = asyncHandler(async (req, res) => {
 
   if (user) {
     generateTokenAndSetCookie(user._id, res);
-    res.json({
+    res.status(200).json({
       id: user._id,
       name: user.name,
       username: user.username,
       email: user.email,
     });
   } else {
-    return res.status(400);
+    res.status(400);
     throw new Error("invalid user data");
   }
 });
 
-//LOGIN
+
+
+
+/////////////LOGIN/////////////////////////////////////////////
 const login = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
 
@@ -72,7 +75,6 @@ const login = asyncHandler(async (req, res) => {
 
   if (user) {
     generateTokenAndSetCookie(user._id, res);
-    console.log(res);
     res.status(200).json({
       _id: user._id,
       name: user.name,
@@ -82,7 +84,10 @@ const login = asyncHandler(async (req, res) => {
   }
 });
 
-//LOGOUT
+
+
+
+///////////////LOGOUT/////////////////////////////////////////////
 const logoutUser = asyncHandler(async (req, res) => {
   res.cookie("jwt", "", {
     httpOnly: true,

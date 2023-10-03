@@ -4,12 +4,15 @@ import Home from "./pages/home";
 import Layout from "./pages/Layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Profile from "./pages/Profile";
+import CreatePost from "./pages/CreatePost";
+import PrivateRoute from "./components/PrivateRoute";
 import { useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
 function App() {
-  const { user } = useSelector((state) => state.auth);
+  //const { user } = useSelector((state) => state.auth);
 
   return (
     <>
@@ -27,9 +30,13 @@ function App() {
       />
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={user ? <Home/> : <Login/> } />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="" element={<PrivateRoute />}>
+            <Route index element={<Home />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/createPost" element={<CreatePost />} />
+          </Route>
         </Route>
       </Routes>
     </>

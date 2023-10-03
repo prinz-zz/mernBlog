@@ -7,6 +7,7 @@
   box-sizing: border-box;
   text-decoration: none;
   list-style: none;
+  outline: none;
 }
 
 a {
@@ -95,9 +96,30 @@ input {
   border-radius: 5px;
   background-color: #fff;
   padding: 12px 20px;
+  margin: 10px 0;
+  box-sizing: border-box;
+  font-size: 16px;
+  transition: all;
+  -moz-transition: all;
+  -webkit-transition: 0.5s;
+}
+textarea {
+  display: block;
+  margin-bottom: 5px;
+  width: 100%;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  padding: 12px 20px;
   margin: 8px 0;
   box-sizing: border-box;
   font-size: 16px;
+}
+input:focus {
+  border: 2px solid lightblue;
+}
+textarea:focus{
+  border: 2px solid lightblue;
 }
 nav{
   cursor: pointer;
@@ -112,6 +134,9 @@ nav{
   border-radius: 5px;
   padding: 15px 10px;
   font-size: 16px;
+}
+.quill {
+  margin: 10px 0;
 }
 form.login h1,
 form.register h1 {

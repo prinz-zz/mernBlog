@@ -1,21 +1,38 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../slices/usersApiSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const [inputs, setInputs] = useState({
-    fullname: "",
+    name: "",
     email: "",
     username: "",
     password: "",
   });
   //console.log(inputs);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [register, { isLoading }] = useRegisterMutation();
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
-    } catch (error) {}
+      const res = await register({
+        name: inputs.name,
+        email: inputs.email,
+        username: inputs.username,
+        password: inputs.password,
+      }).unwrap();
+      toast.success("Registration Success, Please Login");
+      navigate('/login')
+    
+    } catch (err) {
+      toast.error(err?.data?.message || err);
+    }
 
     // const res = await fetch("http://localhost:5050/api/users/register", {
     //   method: "POST",
@@ -39,9 +56,9 @@ export default function Register() {
       <form className={"register"} onSubmit={handleRegister}>
         <input
           type="text"
-          placeholder="Full name"
-          value={inputs.fullname}
-          onChange={(e) => setInputs({ ...inputs, fullname: e.target.value })}
+          placeholder="Name"
+          value={inputs.name}
+          onChange={(e) => setInputs({ ...inputs, name: e.target.value })}
         />
         <input
           type="email"
@@ -61,7 +78,9 @@ export default function Register() {
           value={inputs.password}
           onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
         />
-        <button className='btn' type="submit">Register</button>
+        <button className="btn" type="submit">
+          Register
+        </button>
       </form>
 
       <p className="account">
