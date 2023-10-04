@@ -32,8 +32,8 @@ export default function Header() {
       <nav>
         {user ? (
           <>
+            <Link to="/profile">Howdy, {user.username}</Link>
             <Link to="/createPost">Create Post</Link>
-            <Link to="/profile">Profile</Link>
             <Link onClick={handleLogout}>Logout</Link>
           </>
         ) : (

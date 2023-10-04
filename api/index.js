@@ -10,6 +10,7 @@ import catRoutes from "./routes/catRoutes.js";
 import { dbConnection } from "./dbConnection/dbConnection.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
+import multer from "multer";
 
 const app = express();
 
@@ -19,7 +20,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("common"));
 app.use(cors());
-
 
 // app.use(
 //     cors({
@@ -36,10 +36,23 @@ app.use(cors());
 //     next();
 //   });
 
-
-
 //DB connection
 dbConnection();
+
+//MULTER
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, 'download.jpeg');
+  },
+});
+
+const upload = multer({ storage: storage });
+app.post("/api/upload", upload.single("file"), (req, res) => {
+  res.status(200).json("File uploaded successfully");
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
