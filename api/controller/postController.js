@@ -16,10 +16,10 @@ const updatePost = asyncHandler(async (req, res) => {
   const post = await Post.findById(req.params.id);
   const { id } = req.params;
 
-  console.log(id);
-  console.log(post);
+  console.log("postID: ", post.id);
+  console.log("Body id: ", req.body._id);
 
-  if (post.id === req.body.id) {
+  if (post.id === req.body._id) {
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
@@ -35,23 +35,54 @@ const updatePost = asyncHandler(async (req, res) => {
 ////////////////DELETE POST////////////////
 
 const deletePost = asyncHandler(async (req, res) => {
-  if (req.body.userId === req.params.id) {
-    try {
-      const user = await User.findById(req.params.id);
-      try {
-        await Post.deleteMany({ author: user.author });
-        await User.findByIdAndDelete(req.params.id);
-        res.status(200).json("User has been deleted");
-      } catch (error) {
-        res.status(500).json(error);
-      }
-    } catch (error) {
-      res.status(404).json("User not found");
-    }
+  const post = await Post.findById(req.params.id);
+  const { id } = req.params;
+
+  console.log("postID: ", post.id);
+  console.log("Body id: ", req.body._id);
+
+  if (post.id === req.body._id) {
+    await post.deleteOne();
+    res.status(200).json("Post deleted successfully");
   } else {
     res.status(401);
-    throw new Error("You can only delete your account");
+    throw new Error("You can delete only your post");
   }
 });
 
-export { createPost, updatePost, deletePost };
+////////////////////////////FIND SINGLE POST//////////////////////////////////
+
+const findPost = asyncHandler(async (req, res) => {
+  const post = await Post.findById(req.params.id);
+
+  if (!post) {
+    res.status(404);
+    throw new Error("Sorry, no post found");
+  } else {
+    res.status(200).json(post);
+  }
+});
+
+////////////////////////////FIND ALL POSTS//////////////////////////////////
+
+const findAllPosts = asyncHandler(async (req, res) => {
+  const username = req.query.user;
+  const category = req.query.category;
+
+  let posts;
+
+  if (username) {
+    posts = await Post.find({ username });
+  } else if (category) {
+    posts = await Post.find({
+      categories: {
+        $in: [category],
+      },
+    });
+  }else {
+    posts = await Post.find();
+    res.status(200).json(posts)
+  }
+});
+
+export { createPost, updatePost, deletePost, findAllPosts, findPost };

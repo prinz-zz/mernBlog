@@ -4,11 +4,15 @@ import {
   createPost,
   updatePost,
   deletePost,
+  findAllPosts,
+  findPost,
 } from "../controller/postController.js";
 import { protectedRoutes } from "../middlewares/protectedRoutes.js";
 
 router.post("/", protectedRoutes, createPost);
-router.put("/update/:id", protectedRoutes, updatePost);
-router.delete("/post/:id", protectedRoutes, deletePost);
+router.put("/:id", protectedRoutes, updatePost);
+router.delete("/:id", protectedRoutes, deletePost);
+router.get("/", findAllPosts);
+router.get("/:id", findPost);
 
 export default router;

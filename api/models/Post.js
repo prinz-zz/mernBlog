@@ -14,12 +14,11 @@ const postSchema = new mongoose.Schema(
     categories: Array,
     content: String,
     photo: String,
-    author: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "User" 
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
-
   { timestamps: true }
 );
 
