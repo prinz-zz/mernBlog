@@ -67,7 +67,7 @@ const findPost = asyncHandler(async (req, res) => {
 
 const findAllPosts = asyncHandler(async (req, res) => {
   const username = req.query.user;
-  const category = req.query.category;
+  const category = req.query.cat;
 
   let posts;
 
@@ -79,9 +79,14 @@ const findAllPosts = asyncHandler(async (req, res) => {
         $in: [category],
       },
     });
-  }else {
+  } else {
     posts = await Post.find();
-    res.status(200).json(posts)
+  }
+  res.status(200).json(posts);
+
+  if (!posts) {
+    res.status(404);
+    throw new Error("Sorry, no posts found");
   }
 });
 
