@@ -47,14 +47,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    //Create Post
-    createPost: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/createPost`,
-        method: "POST",
-        body: data,
-      }),
-    }),
+    
   }),
 });
 
@@ -62,7 +55,6 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
-  useCreatePostMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
 } = usersApiSlice;

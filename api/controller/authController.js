@@ -74,7 +74,15 @@ const login = asyncHandler(async (req, res) => {
   }
 
   if (user) {
-    generateTokenAndSetCookie(user._id, res);
+
+    res.cookie("jwt", 'token', {
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      sameSite: "strict",
+    })
+
+
+    //generateTokenAndSetCookie(user._id, res);
     res.status(200).json({
       _id: user._id,
       name: user.name,

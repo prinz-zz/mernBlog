@@ -9,7 +9,7 @@ import {
 } from "../controller/postController.js";
 import { protectedRoutes } from "../middlewares/protectedRoutes.js";
 
-router.post("/", protectedRoutes, createPost);
+router.post("/", createPost);
 router.put("/:id", protectedRoutes, updatePost);
 router.delete("/:id", protectedRoutes, deletePost);
 router.get("/", findAllPosts);

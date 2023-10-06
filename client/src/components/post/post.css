@@ -1,7 +1,7 @@
 .post {
   width: 385px;
   margin: 0px 25px 40px 25px;
-  display: flex;
+  display: flex!important;
   flex-direction: column;
 }
 
@@ -19,7 +19,6 @@
 }
 
 .postCat {
-  font-family: "Varela Round", Arial, Helvetica, sans-serif;
   font-weight: 400;
   font-size: 11px;
   color: #be9656;
@@ -30,7 +29,6 @@
 }
 
 .postTitle {
-  font-family: "Josefin Sans", Arial, Helvetica, sans-serif;
   font-size: 24px;
   font-weight: 900;
   margin-top: 15px;
@@ -38,7 +36,6 @@
 }
 
 .postDate {
-  font-family: "Lora", serif;
   font-style: italic;
   font-size: 13px;
   font-weight: 400;
@@ -47,7 +44,6 @@
 }
 
 .postDesc {
-  font-family: "Varela Round", Arial, Helvetica, sans-serif;
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;

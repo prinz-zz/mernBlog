@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import CreatePost from "./pages/CreatePost";
+import Single from "./pages/Single";
 import PrivateRoute from "./components/PrivateRoute";
 import { useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
@@ -36,6 +37,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/createPost" element={<CreatePost />} />
+            <Route path='/post/:postId' element={<Single/>}/>
           </Route>
         </Route>
       </Routes>
