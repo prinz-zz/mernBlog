@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 import Header from './components/Header';
+import Footerr from './components/Footerr';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -23,6 +24,7 @@ function App() {
           <Route path='/signin' element={<Signin/>} />
           <Route path='/signup' element={<Signup/>} />
         </Routes>
+        <Footerr/>
       </BrowserRouter>
       
     </>
