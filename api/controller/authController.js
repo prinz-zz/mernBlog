@@ -22,7 +22,7 @@ export const signup = async (req, res, next) => {
   const newUser = new User({
     username,
     email,
-    password:hashedPassword,
+    password: hashedPassword,
   });
 
   try {
@@ -44,11 +44,13 @@ export const signin = async (req, res, next) => {
   try {
     const validUser = await User.findOne({ email });
     if (!validUser) {
-      next(errorMsg(404, "User not found"));
+      return next(errorMsg(404, "User not found"));
     }
+    console.log(validUser);
+
     const validPassword = bcrypt.compareSync(password, validUser.password);
     if (!validPassword) {
-      next(errorMsg(404, "Wrong credentials"));
+      return next(errorMsg(404, "Wrong credentials"));
     }
 
     const token = jwt.sign(
@@ -59,10 +61,12 @@ export const signin = async (req, res, next) => {
       { expiresIn: "20m" }
     );
 
+    const { password: pass, ...rest } = validUser._doc;
 
-    const{ password: pass, ...rest } = validUser._doc;
-
-    res.status(200).cookie("access_token", token, { httpOnly: true }).json(rest);
+    res
+      .status(200)
+      .cookie("access_token", token, { httpOnly: true })
+      .json(rest);
   } catch (error) {
     console.log(error);
   }

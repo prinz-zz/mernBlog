@@ -3,13 +3,22 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { HiInformationCircle } from "react-icons/hi";
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice.js';
+import { useDispatch, useSelector } from 'react-redux';
+
+
 
 export default function Signin() {
 
     const [formData, setFormData] = useState({})
-    const [errorMsg, setErrorMsg] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate()
+    // const [errorMsg, setErrorMsg] = useState(null);
+    // const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { error: errorMsg, loading } = useSelector((state) => state.user)
+    
+
+    
    
     const handleChange = (e)=>{
         setFormData({ ...formData, [e.target.id]: e.target.value.trim() })
@@ -20,13 +29,12 @@ export default function Signin() {
         e.preventDefault();
 
         if (!formData.email || !formData.password) {
-            return setErrorMsg("Please enter all fields");
+            return dispatch(signInFailure("Please enter all fields"));
           }
 
         
         try {
-            setLoading(true);
-            setErrorMsg(null);
+            dispatch(signInStart())
             const res = await fetch('/api/auth/signin',{
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -35,15 +43,16 @@ export default function Signin() {
               const data = await res.json();      
               console.log(data);
               if (data.success === false) {
-                return setErrorMsg(data.message);
+                dispatch(signInFailure(data.message));
               }
-              setLoading(false);
+              
               if(res.ok){
+                dispatch(signInSuccess(data));
                 navigate('/')
               }
         } catch (error) {
-            setErrorMsg(data.message);
-            setLoading(false);
+            dispatch(signInFailure(error.message));
+            console.log(error.message);
         }
     }
 
