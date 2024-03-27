@@ -71,3 +71,37 @@ export const signin = async (req, res, next) => {
     console.log(error);
   }
 };
+
+/// google.auth
+export const google = async (req, res, next) => {
+  const { name, email, photo } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        expiresIn: "20m",
+      });
+      const { password: pass, ...rest } = user._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, { httpOnly: true })
+        .json(rest);
+    } else {
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(generatedPassword, salt)
+      const newUser = new User({
+        username: name,
+        email,
+        password: hashedPassword,
+        photo,
+      })
+    }
+  } catch (error) {
+    next(error);
+  }
+};
