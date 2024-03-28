@@ -1,9 +1,13 @@
-import { Button, Navbar, TextInput } from "flowbite-react";
+import { Button, Navbar, TextInput, Dropdown, Avatar  } from "flowbite-react";
 import { Link, NavLink } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 export default function Header() {
+  const currentUser = useSelector((state) => state.user.currentUser);
+  
+
   return (
     <Navbar className="border-b-2">
       <Button gradientDuoTone="pinkToOrange">Pink to Orange</Button>
@@ -22,8 +26,34 @@ export default function Header() {
           <FaMoon />
         </Button>
         <Link to="/signin">
-          <Button gradientDuoTone="cyanToBlue" outline>Sign in</Button>
+          <Button gradientDuoTone="cyanToBlue" outline>
+            Sign in
+          </Button>
         </Link>
+
+        <Dropdown
+          arrowIcon={false}
+          inline
+          label={
+            <Avatar
+              alt="User settings"
+              img={currentUser.photo}
+              rounded
+            />
+          }>
+          <Dropdown.Header>
+            <span className="block text-sm">{currentUser.username}</span>
+            <span className="block truncate text-sm font-medium">
+              {currentUser.email}
+            </span>
+          </Dropdown.Header>
+          <Dropdown.Item>Dashboard</Dropdown.Item>
+          <Dropdown.Item>Settings</Dropdown.Item>
+          <Dropdown.Item>Earnings</Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item>Sign out</Dropdown.Item>
+        </Dropdown>
+
         <Navbar.Toggle />
       </div>
 
