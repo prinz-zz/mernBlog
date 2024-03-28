@@ -19,8 +19,8 @@ export default function OAuth(){
             const resultsFromGoogle = await signInWithPopup(auth, provider)
             const res = await fetch('/api/auth/google', {
                 method: 'POST',
-                "Content-Type": 'application/json',
-                body: JSON.Stringify({
+                headers: {"Content-Type": 'application/json'},
+                body: JSON.stringify({
                     name: resultsFromGoogle.user.displayName,
                     email: resultsFromGoogle.user.email,
                     photo: resultsFromGoogle.user.photoURL

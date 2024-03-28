@@ -82,7 +82,7 @@ export const google = async (req, res, next) => {
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
         expiresIn: "20m",
       });
-      const { password: pass, ...rest } = user._doc;
+      const { password, ...rest } = user._doc;
       res
         .status(200)
         .cookie("access_token", token, { httpOnly: true })
@@ -93,15 +93,30 @@ export const google = async (req, res, next) => {
         Math.random().toString(36).slice(-8);
 
       const salt = bcrypt.genSaltSync(10);
-      const hashedPassword = bcrypt.hashSync(generatedPassword, salt)
+      const hashedPassword = bcrypt.hashSync(generatedPassword, salt);
+      
       const newUser = new User({
-        username: name,
+        username:
+          name.toLowerCase().split(" ").join("") +
+          Math.random().toString(9).slice(-4),
         email,
         password: hashedPassword,
         photo,
-      })
+      });
+      await newUser.save();
+      
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+        expiresIn: "20m",
+      });
+      const { password, ...rest } = newUser._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, { httpOnly: true })
+        .json(rest);
     }
   } catch (error) {
     next(error);
   }
 };
+
+Math.random().toString(16)
