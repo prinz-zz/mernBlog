@@ -5,7 +5,7 @@ export default function ThemeProvider({ children }) {
     console.log(theme);
   return (
     <div className={theme}>
-      <div className="bg-white text-gray-700 dark:text-gary-200 dark:bg-slate-900 ">
+      <div className="bg-white text-gray-700 dark:text-white dark:bg-slate-900 min-h-screen">
         {children}
       </div>
     </div>
