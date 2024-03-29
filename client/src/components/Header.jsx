@@ -66,6 +66,7 @@ export default function Header() {
       <Navbar.Collapse>
         <NavLink to="/">Home</NavLink>
         <NavLink to="/about">About</NavLink>
+        <NavLink to="/dashboard">Dashboard</NavLink>
       </Navbar.Collapse>
     </Navbar>
   );
