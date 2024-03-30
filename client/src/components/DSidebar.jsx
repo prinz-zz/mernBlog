@@ -27,7 +27,7 @@ export default function DSidebar() {
 
 
   return (
-    <Sidebar aria-label="Default sidebar example">
+    <Sidebar className='h-full w-full md:w-56'>
       <Sidebar.Items>
         <Sidebar.ItemGroup>
           <Link to='/dashboard?tab=profile'>
