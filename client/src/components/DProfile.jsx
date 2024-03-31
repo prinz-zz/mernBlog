@@ -9,7 +9,7 @@ import {
 } from "flowbite-react";
 import { useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
-import { getStorage, uploadBytesResumable, ref } from 'firebase/storage';
+import { getStorage, uploadBytesResumable, ref, getDownloadURL } from 'firebase/storage';
 import { app } from '../firebase';
 
 export default function DProfile() {
@@ -17,12 +17,13 @@ export default function DProfile() {
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const fileRef = useRef();
   const [profileImgUploadProgress, setProfileImgUploadProgress] = useState(null);
-
+  const [profileImgUploadError, setProfileImgUploadError] = useState(null);
+  console.log(profileImgUploadProgress, profileImgUploadError);
 
   const { photo, username, email } = useSelector(
     (state) => state.user.currentUser
   );
-  console.log(profileImg, imageFileUrl);
+  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -51,7 +52,16 @@ export default function DProfile() {
     uploadTask.on('state_changed', 
       (snapshot) => {
       const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      setImageFileUploadProgress(progress.toFixed(0));
+      setProfileImgUploadProgress(progress.toFixed(0));
+      },
+      (error)=> {
+        setProfileImgUploadError('Could not upload image (File mus be less than 2MB)');
+      }, 
+      () => {
+        // Upload completed successfully, now we can get the download URL
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setImageFileUrl(downloadURL);
+        })
       }
     )  
   }
