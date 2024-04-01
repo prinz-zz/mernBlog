@@ -43,7 +43,7 @@ export default function DProfile() {
   //////
   const uploadImg = async()=>{
    
-
+    setProfileImgUploadError(null)
     const storage = getStorage(app);
     const fileName = new Date().getTime() + profileImg.name;
     const storageRef = ref(storage, fileName);
@@ -55,7 +55,7 @@ export default function DProfile() {
       setProfileImgUploadProgress(progress.toFixed(0));
       },
       (error)=> {
-        setProfileImgUploadError('Could not upload image (File mus be less than 2MB)');
+        setProfileImgUploadError('Could not upload image (File must be less than 2MB)');
       }, 
       () => {
         // Upload completed successfully, now we can get the download URL
@@ -83,6 +83,7 @@ export default function DProfile() {
           className="cursor-pointer"
           onClick={()=> fileRef.current.click()}
         />
+        {profileImgUploadError && <Alert color="failure">{profileImgUploadError}</Alert>}
         <TextInput
           id="username"
           type="text"
