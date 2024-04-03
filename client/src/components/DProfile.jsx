@@ -9,8 +9,13 @@ import {
 } from "flowbite-react";
 import { useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
-import { getStorage, uploadBytesResumable, ref, getDownloadURL } from 'firebase/storage';
-import { app } from '../firebase';
+import {
+  getStorage,
+  uploadBytesResumable,
+  ref,
+  getDownloadURL,
+} from "firebase/storage";
+import { app } from "../firebase";
 
 export default function DProfile() {
   const [profileImg, setProfileImg] = useState(null);
@@ -18,12 +23,12 @@ export default function DProfile() {
   const fileRef = useRef();
   const [profileImgUploadProgress, setProfileImgUploadProgress] = useState(null);
   const [profileImgUploadError, setProfileImgUploadError] = useState(null);
+  const [formData, setFormData] = useState({});
   console.log(profileImgUploadProgress, profileImgUploadError);
 
   const { photo, username, email } = useSelector(
     (state) => state.user.currentUser
   );
-  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -33,46 +38,65 @@ export default function DProfile() {
     }
   };
 
-  useEffect(() =>{
-    if(profileImg){
-      uploadImg()
+  useEffect(() => {
+    if (profileImg) {
+      uploadImg();
     }
-  },[profileImg])
-
+  }, [profileImg]);
 
   //////
-  const uploadImg = async()=>{
-   
-    setProfileImgUploadError(null)
+  const uploadImg = async () => {
+    setProfileImgUploadError(null);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + profileImg.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, profileImg);
 
-    uploadTask.on('state_changed', 
+    uploadTask.on(
+      "state_changed",
       (snapshot) => {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      setProfileImgUploadProgress(progress.toFixed(0));
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProfileImgUploadProgress(progress.toFixed(0));
       },
-      (error)=> {
-        setProfileImgUploadError('Could not upload image (File must be less than 2MB)');
-      }, 
+      (error) => {
+        setProfileImgUploadError(
+          "Could not upload image (File must be less than 2MB)"
+        );
+      },
       () => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
-        })
+          setFormData({...formData, photo:downloadURL});
+        });
       }
-    )  
-  }
+    );
+  };
 
+  const handleChange = (e) => {
+      setFormData({...formData, [e.target.id]: e.target.value})
+  }
+  
+  const handleImageChange = (e) => {
+    e.preventDefault();
+    if(Object.keys(formData).length === 0){
+        return;
+    }
+  }
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
 
-      <form className="flex flex-col gap-6">
-        <input type="file" accept="image/*" onChange={handleImageChange} ref={fileRef} hidden/>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          ref={fileRef}
+          hidden
+        />
         <Avatar
           alt="User settings"
           img={imageFileUrl || photo}
@@ -81,22 +105,31 @@ export default function DProfile() {
           color="gray"
           size="xl"
           className="cursor-pointer"
-          onClick={()=> fileRef.current.click()}
+          onClick={() => fileRef.current.click()}
         />
-        {profileImgUploadError && <Alert color="failure">{profileImgUploadError}</Alert>}
+        {profileImgUploadError && (
+          <Alert color="failure">{profileImgUploadError}</Alert>
+        )}
         <TextInput
           id="username"
           type="text"
           placeholder="Username"
           defaultValue={username}
+          onChange={handleChange}
         />
         <TextInput
           id="email"
           type="email"
           placeholder="Email"
           defaultValue={email}
+          onChange={handleChange}
         />
-        <TextInput id="password" type="password" placeholder="Password" />
+        <TextInput
+          id="password"
+          type="password"
+          placeholder="Password"
+          onChange={handleChange}
+        />
         <Button gradientDuoTone="purpleToBlue" outline>
           Update
         </Button>
