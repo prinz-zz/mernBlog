@@ -2,9 +2,9 @@ import bcrypt from "bcryptjs";
 import { errorMsg } from "../utils/errorMsg.js";
 import User from "../models/userModel.js";
 
+
+/////////////////UPDATE/////////
 export const updateUser = async (req, res, next) => {
-
-
   if (req.user.id !== req.params.userId) {
     return next(errorMsg(403, "You are not authorised to update the user"));
   }
@@ -57,3 +57,23 @@ export const updateUser = async (req, res, next) => {
     next(error);
   }
 };
+
+
+/////////////////////////DELETE//////////////////////////////
+export const deleteUser = async (req, res, next) =>{
+
+  if(req.user.id !== req.params.userId){
+    return next(errorMsg(401, 'You are not authorised to update the user'))
+  }
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.userId);
+    res.status(200).json({
+      message:"User has been deleted",
+      user: deletedUser
+    })
+  } catch (error) {
+    next(error)
+  }
+
+}
