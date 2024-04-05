@@ -6,6 +6,7 @@ import {
   Alert,
   Spinner,
   Avatar,
+  Modal,
 } from "flowbite-react";
 
 import { useState, useEffect, useRef } from "react";
@@ -22,20 +23,23 @@ import {
   updateFailure,
 } from "../redux/user/userSlice.js";
 import { useDispatch, useSelector } from "react-redux";
-import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { HiOutlineExclamationCircle } from "react-icons/hi2";
 
 export default function DProfile() {
   const [profileImg, setProfileImg] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const fileRef = useRef();
-  const [profileImgUploadProgress, setProfileImgUploadProgress] = useState(null);
+  const [profileImgUploadProgress, setProfileImgUploadProgress] =
+    useState(null);
   const [profileImgUploadError, setProfileImgUploadError] = useState(null);
   const [profileImgUploading, setProfileImgUploading] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateUserSuccess, setUpdateUserSuccess] = useState(false);
   const [updateUserError, setUpdateUserError] = useState(false);
-  const { currentUser, error, loading } = useSelector(state => state.user)
+  const [showModal, setShowModal] = useState(false);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   console.log(profileImgUploadProgress, profileImgUploadError);
 
   console.log(currentUser);
@@ -76,7 +80,7 @@ export default function DProfile() {
         setProfileImgUploadError(
           "Could not upload image (File must be less than 2MB)"
         );
-        setProfileImgUploadProgress(null)
+        setProfileImgUploadProgress(null);
         setProfileImgUploading(false);
         setProfileImg(null);
         setImageFileUrl(null);
@@ -102,14 +106,14 @@ export default function DProfile() {
     setUpdateUserSuccess(null);
 
     if (Object.keys(formData).length === 0) {
-      setUpdateUserError('No changes were made')
+      setUpdateUserError("No changes were made");
       return;
     }
-    if(profileImgUploading){
-      setUpdateUserError('Please wait image to upload')
+    if (profileImgUploading) {
+      setUpdateUserError("Please wait image to upload");
       return;
     }
-    
+
     try {
       dispatch(updateStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
@@ -123,7 +127,7 @@ export default function DProfile() {
 
       if (!res.ok) {
         dispatch(updateFailure(data.message));
-        setUpdateUserError(data.message)
+        setUpdateUserError(data.message);
       } else {
         dispatch(updateSuccess(data));
         setUpdateUserSuccess("User profile updated successfully");
@@ -133,6 +137,12 @@ export default function DProfile() {
       console.log(error);
     }
   };
+
+
+  const handleDeleteUser = async()=>{
+
+  }
+
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
@@ -184,11 +194,37 @@ export default function DProfile() {
         </Button>
       </form>
       <div className="text-red-500 flex justify-between mt-2">
-        <div className="cursor-pointer">Delete Account</div>
+        <div className="cursor-pointer" onClick={() => setShowModal(true)}>
+          Delete Account
+        </div>
         <div className="cursor-pointer">Sign Out</div>
       </div>
-      {updateUserSuccess && <Alert color="success" className='mt-5'>{updateUserSuccess}</Alert>}
-      {updateUserError && <Alert color="failure" className='mt-5'>{updateUserError}</Alert>}
+      {updateUserSuccess && (
+        <Alert color="success" className="mt-5">
+          {updateUserSuccess}
+        </Alert>
+      )}
+      {updateUserError && (
+        <Alert color="failure" className="mt-5">
+          {updateUserError}
+        </Alert>
+      )}
+
+      {/* ----------MODAL---------- */}
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        <Modal.Header>Terms of Service</Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mx-auto mb-4" />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>Are you sure you want to delete your account?</h3>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button color ='success' onClick={handleDeleteUser}>Yes, I'm sure</Button>
+          <Button color="failure" onClick={() => setShowModal(false)}>Cancel</Button>
+        </Modal.Footer>
+      </Modal>
+      {/* ----------MODAL---------- */}
     </div>
   );
 }
