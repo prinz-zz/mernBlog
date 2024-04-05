@@ -8,7 +8,5 @@ export default function PrivateRoutes(){
     const  { currentUser } = useSelector((state) => state.user)
     
 
-    console.log(currentUser);
-
     return currentUser ? <Outlet/> : <Navigate to={'/signin'}/>
 }

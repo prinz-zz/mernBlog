@@ -7,7 +7,7 @@ import {
   Spinner,
   Avatar,
 } from "flowbite-react";
-import { useSelector } from "react-redux";
+
 import { useState, useEffect, useRef } from "react";
 import {
   getStorage,
@@ -16,6 +16,14 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "../firebase";
+import {
+  updateStart,
+  updateSuccess,
+  updateFailure,
+} from "../redux/user/userSlice.js";
+import { useDispatch, useSelector } from "react-redux";
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 export default function DProfile() {
   const [profileImg, setProfileImg] = useState(null);
@@ -23,12 +31,16 @@ export default function DProfile() {
   const fileRef = useRef();
   const [profileImgUploadProgress, setProfileImgUploadProgress] = useState(null);
   const [profileImgUploadError, setProfileImgUploadError] = useState(null);
+  const [profileImgUploading, setProfileImgUploading] = useState(false);
   const [formData, setFormData] = useState({});
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(false);
+  const [updateUserError, setUpdateUserError] = useState(false);
+  const { currentUser, error, loading } = useSelector(state => state.user)
   console.log(profileImgUploadProgress, profileImgUploadError);
 
-  const { photo, username, email } = useSelector(
-    (state) => state.user.currentUser
-  );
+  console.log(currentUser);
+
+  const dispatch = useDispatch();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -46,6 +58,7 @@ export default function DProfile() {
 
   //////
   const uploadImg = async () => {
+    setProfileImgUploading(true);
     setProfileImgUploadError(null);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + profileImg.name;
@@ -63,27 +76,63 @@ export default function DProfile() {
         setProfileImgUploadError(
           "Could not upload image (File must be less than 2MB)"
         );
+        setProfileImgUploadProgress(null)
+        setProfileImgUploading(false);
+        setProfileImg(null);
+        setImageFileUrl(null);
       },
       () => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
-          setFormData({...formData, photo:downloadURL});
+          setFormData({ ...formData, photo: downloadURL });
+          setProfileImgUploading(false);
         });
       }
     );
   };
 
   const handleChange = (e) => {
-      setFormData({...formData, [e.target.id]: e.target.value})
-  }
-  
-  const handleImageChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(Object.keys(formData).length === 0){
-        return;
+    setUpdateUserError(null);
+    setUpdateUserSuccess(null);
+
+    if (Object.keys(formData).length === 0) {
+      setUpdateUserError('No changes were made')
+      return;
     }
-  }
+    if(profileImgUploading){
+      setUpdateUserError('Please wait image to upload')
+      return;
+    }
+    
+    try {
+      dispatch(updateStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+        setUpdateUserError(data.message)
+      } else {
+        dispatch(updateSuccess(data));
+        setUpdateUserSuccess("User profile updated successfully");
+      }
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+      console.log(error);
+    }
+  };
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
@@ -99,7 +148,7 @@ export default function DProfile() {
         />
         <Avatar
           alt="User settings"
-          img={imageFileUrl || photo}
+          img={imageFileUrl || currentUser.photo}
           rounded
           bordered
           color="gray"
@@ -114,14 +163,14 @@ export default function DProfile() {
           id="username"
           type="text"
           placeholder="Username"
-          defaultValue={username}
+          defaultValue={currentUser.username}
           onChange={handleChange}
         />
         <TextInput
           id="email"
           type="email"
           placeholder="Email"
-          defaultValue={email}
+          defaultValue={currentUser.email}
           onChange={handleChange}
         />
         <TextInput
@@ -130,7 +179,7 @@ export default function DProfile() {
           placeholder="Password"
           onChange={handleChange}
         />
-        <Button gradientDuoTone="purpleToBlue" outline>
+        <Button type="submit" gradientDuoTone="purpleToBlue" outline>
           Update
         </Button>
       </form>
@@ -138,6 +187,8 @@ export default function DProfile() {
         <div className="cursor-pointer">Delete Account</div>
         <div className="cursor-pointer">Sign Out</div>
       </div>
+      {updateUserSuccess && <Alert color="success" className='mt-5'>{updateUserSuccess}</Alert>}
+      {updateUserError && <Alert color="failure" className='mt-5'>{updateUserError}</Alert>}
     </div>
   );
 }

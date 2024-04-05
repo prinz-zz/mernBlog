@@ -15,7 +15,7 @@ export default function DSidebar() {
 
   const location = useLocation();
   const [tab, setTab] = useState("");
-  console.log(location);
+  
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
