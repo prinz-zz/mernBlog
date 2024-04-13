@@ -21,6 +21,9 @@ import {
   updateStart,
   updateSuccess,
   updateFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
 } from "../redux/user/userSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { CircularProgressbar } from "react-circular-progressbar";
@@ -40,9 +43,9 @@ export default function DProfile() {
   const [updateUserError, setUpdateUserError] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const { currentUser, error, loading } = useSelector((state) => state.user);
-  console.log(profileImgUploadProgress, profileImgUploadError);
+ 
 
-  console.log(currentUser);
+  console.log(currentUser._id);
 
   const dispatch = useDispatch();
 
@@ -138,11 +141,25 @@ export default function DProfile() {
     }
   };
 
+  const handleDeleteUser = async () => {
+    setShowModal(false);
 
-  const handleDeleteUser = async()=>{
-
-  }
-
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if(!res.ok){
+        dispatch(deleteUserFailure(data.message));
+      }else{
+        dispatch(deleteUserSuccess(data.message));
+      }
+      
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
@@ -209,6 +226,11 @@ export default function DProfile() {
           {updateUserError}
         </Alert>
       )}
+      {error && (
+        <Alert color="failure" className="mt-5">
+          {error}
+        </Alert>
+      )}
 
       {/* ----------MODAL---------- */}
       <Modal show={showModal} onClose={() => setShowModal(false)}>
@@ -216,12 +238,18 @@ export default function DProfile() {
         <Modal.Body>
           <div className="text-center">
             <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mx-auto mb-4" />
-            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>Are you sure you want to delete your account?</h3>
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete your account?
+            </h3>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button color ='success' onClick={handleDeleteUser}>Yes, I'm sure</Button>
-          <Button color="failure" onClick={() => setShowModal(false)}>Cancel</Button>
+        <Modal.Footer className='mx-auto'>
+          <Button color="success" onClick={handleDeleteUser}>
+            Yes, I'm sure
+          </Button>
+          <Button color="failure" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
         </Modal.Footer>
       </Modal>
       {/* ----------MODAL---------- */}
