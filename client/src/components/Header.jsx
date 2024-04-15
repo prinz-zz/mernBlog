@@ -1,5 +1,5 @@
 import { Button, Navbar, TextInput, Dropdown, Avatar } from "flowbite-react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,6 +10,7 @@ export default function Header() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const { theme } = useSelector((state) => state.theme);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSignout = async () => {
     try {
@@ -22,6 +23,7 @@ export default function Header() {
         console.log(data.message);
       }else{
         dispatch(signOutSuccess());
+        navigate('/signin')
       }
     
     } catch (error) {

@@ -46,7 +46,7 @@ export const signin = async (req, res, next) => {
     if (!validUser) {
       return next(errorMsg(404, "User not found"));
     }
-    
+
     console.log(validUser);
 
     const validPassword = bcrypt.compareSync(password, validUser.password);
@@ -57,6 +57,7 @@ export const signin = async (req, res, next) => {
     const token = jwt.sign(
       {
         id: validUser._id,
+        isAdmin: validUser.isAdmin,
       },
       process.env.JWT_SECRET,
       { expiresIn: "20m" }
@@ -80,9 +81,13 @@ export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: "20m",
-      });
+      const token = jwt.sign(
+        { id: user.id, isAdmin: user.isAdmin },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "20m",
+        }
+      );
       const { password, ...rest } = user._doc;
       res
         .status(200)
@@ -95,7 +100,7 @@ export const google = async (req, res, next) => {
 
       const salt = bcrypt.genSaltSync(10);
       const hashedPassword = bcrypt.hashSync(generatedPassword, salt);
-      
+
       const newUser = new User({
         username:
           name.toLowerCase().split(" ").join("") +
@@ -105,10 +110,14 @@ export const google = async (req, res, next) => {
         photo,
       });
       await newUser.save();
-      
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-        expiresIn: "20m",
-      });
+
+      const token = jwt.sign(
+        { id: newUser._id, isAdmin: newUser.isAdmin },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "20m",
+        }
+      );
       const { password, ...rest } = newUser._doc;
       res
         .status(200)
@@ -120,4 +129,4 @@ export const google = async (req, res, next) => {
   }
 };
 
-Math.random().toString(16)
+Math.random().toString(16);
