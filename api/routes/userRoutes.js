@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 
-import { updateUser, deleteUser } from '../controller/userController.js';
+import { updateUser, deleteUser, signOutUser } from '../controller/userController.js';
 import { verifyUser } from '../utils/verifyUser.js';
 
 router.get('/test', (req, res) => {
@@ -9,6 +9,7 @@ router.get('/test', (req, res) => {
 })
 router.put('/update/:userId', verifyUser, updateUser);
 router.delete('/delete/:userId', verifyUser, deleteUser);
+router.post('/signout', signOutUser);
 
 export default router;
 

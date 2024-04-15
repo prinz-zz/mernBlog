@@ -24,6 +24,7 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
+  signOutSuccess,
 } from "../redux/user/userSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { CircularProgressbar } from "react-circular-progressbar";
@@ -161,6 +162,24 @@ export default function DProfile() {
     }
   };
 
+  const handleSignout = async () => {
+      try {
+        const res = await fetch(`/api/user/signout`, {
+          method: 'POST',
+        });
+        const data = await res.json();
+
+        if(!res.ok){
+          console.log(data.message);
+        }else{
+          dispatch(signOutSuccess());
+        }
+      
+      } catch (error) {
+        console.log(error.message);
+      }
+  };
+
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
@@ -214,7 +233,7 @@ export default function DProfile() {
         <div className="cursor-pointer" onClick={() => setShowModal(true)}>
           Delete Account
         </div>
-        <div className="cursor-pointer">Sign Out</div>
+        <div className="cursor-pointer" onClick={handleSignout}>Sign Out</div>
       </div>
       {updateUserSuccess && (
         <Alert color="success" className="mt-5">
