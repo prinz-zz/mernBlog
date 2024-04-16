@@ -30,6 +30,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
+import { Link } from "react-router-dom";
+
 
 export default function DProfile() {
   const [profileImg, setProfileImg] = useState(null);
@@ -44,7 +46,6 @@ export default function DProfile() {
   const [updateUserError, setUpdateUserError] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const { currentUser, error, loading } = useSelector((state) => state.user);
- 
 
   console.log(currentUser._id);
 
@@ -148,36 +149,34 @@ export default function DProfile() {
     try {
       dispatch(deleteUserStart());
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
       const data = await res.json();
-      if(!res.ok){
+      if (!res.ok) {
         dispatch(deleteUserFailure(data.message));
-      }else{
+      } else {
         dispatch(deleteUserSuccess(data.message));
       }
-      
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
   };
 
   const handleSignout = async () => {
-      try {
-        const res = await fetch(`/api/user/signout`, {
-          method: 'POST',
-        });
-        const data = await res.json();
+    try {
+      const res = await fetch(`/api/user/signout`, {
+        method: "POST",
+      });
+      const data = await res.json();
 
-        if(!res.ok){
-          console.log(data.message);
-        }else{
-          dispatch(signOutSuccess());
-        }
-      
-      } catch (error) {
-        console.log(error.message);
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signOutSuccess());
       }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -225,15 +224,25 @@ export default function DProfile() {
           placeholder="Password"
           onChange={handleChange}
         />
-        <Button type="submit" gradientDuoTone="purpleToBlue" outline>
-          Update
+        <Button type="submit" gradientDuoTone="purpleToBlue" outline disabled={ loading || profileImgUploading }>
+          { loading ? "Updating..." : "Update" }
         </Button>
+
+        {currentUser.isAdmin && (
+          
+          <Button type="button" gradientDuoTone="purpleToBlue" outline>
+            <Link to='/create-post'>Create a Post</Link>
+          </Button>
+          
+        )}
       </form>
       <div className="text-red-500 flex justify-between mt-2">
         <div className="cursor-pointer" onClick={() => setShowModal(true)}>
           Delete Account
         </div>
-        <div className="cursor-pointer" onClick={handleSignout}>Sign Out</div>
+        <div className="cursor-pointer" onClick={handleSignout}>
+          Sign Out
+        </div>
       </div>
       {updateUserSuccess && (
         <Alert color="success" className="mt-5">
@@ -262,7 +271,7 @@ export default function DProfile() {
             </h3>
           </div>
         </Modal.Body>
-        <Modal.Footer className='mx-auto'>
+        <Modal.Footer className="mx-auto">
           <Button color="success" onClick={handleDeleteUser}>
             Yes, I'm sure
           </Button>
